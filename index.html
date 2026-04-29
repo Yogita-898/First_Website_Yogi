@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chemical Magics — Class 10 NCERT Simulations</title>
+  <meta name="description"
+    content="Interactive chemistry simulations for Class 10 NCERT Science. Watch chemical reactions come alive with animated visuals." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <canvas id="hero-bg"></canvas>
+    <div class="hero-content">
+      <div class="hero-icon">⚗️</div>
+      <h1 class="hero-title">Chemical <span class="glow-text">Magics</span></h1>
+      <p class="hero-sub">Interactive Simulations · Class 10 NCERT Science</p>
+      <p class="hero-desc">Watch 15 chemical reactions come alive. Click <strong>Play</strong> on any simulation to see
+        the magic unfold.</p>
+      <a href="#chapter1" class="hero-btn">Start Exploring →</a>
+    </div>
+  </header>
+
+  <!-- STICKY NAV -->
+  <nav class="chapter-nav" id="chapter-nav">
+    <a href="#chapter1" class="nav-link active" data-tab="1">Ch. 1 — Reactions & Equations</a>
+    <a href="#chapter2" class="nav-link" data-tab="2">Ch. 2 — Acids, Bases & Salts</a>
+    <a href="#chapter3" class="nav-link" data-tab="3">Ch. 3 — Metals & Non-Metals</a>
+    <a href="#chapter4" class="nav-link" data-tab="4">Ch. 4 — Carbon &amp; its Compounds</a>
+  </nav>
+
+  <main>
+
+    <!-- ========== CHAPTER 1 ========== -->
+    <section class="chapter-section" id="chapter1">
+      <div class="chapter-header">
+        <span class="chapter-num">Chapter 1</span>
+        <h2>Chemical Reactions &amp; Equations</h2>
+      </div>
+      <div class="cards-grid">
+
+        <!-- Sim 1: Burning Magnesium -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Combination</span>
+            <span class="badge badge-exo">Exothermic</span>
+          </div>
+          <h3>Burning of Magnesium</h3>
+          <div class="equation">2Mg<sub>(s)</sub> + O<sub>2(g)</sub> <span class="arrow">→</span> 2MgO<sub>(s)</sub>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="sim1" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn1" onclick="toggleSim(1)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(1)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Bright dazzling white light emitted</li>
+              <li>White fumes of MgO formed</li>
+              <li>Intense heat released (exothermic)</li>
+              <li>White powdery residue left behind</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 2: FeSO4 Decomposition -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-decomp">Decomposition</span>
+            <span class="badge badge-therm">Thermal</span>
+          </div>
+          <h3>Decomposition of Ferrous Sulphate</h3>
+          <div class="equation">2FeSO<sub>4(s)</sub> <span class="heat-arrow">→<sup>Δ</sup></span>
+            Fe<sub>2</sub>O<sub>3(s)</sub> + SO<sub>2(g)</sub> + SO<sub>3(g)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim2" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn2" onclick="toggleSim(2)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(2)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Green crystals turn reddish-brown (Fe₂O₃)</li>
+              <li>Smell of burning sulphur (SO₂ gas)</li>
+              <li>Colourless gas SO₃ also released</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 3: Lead Nitrate -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-decomp">Decomposition</span>
+            <span class="badge badge-therm">Thermal</span>
+          </div>
+          <h3>Decomposition of Lead Nitrate</h3>
+          <div class="equation">2Pb(NO<sub>3</sub>)<sub>2(s)</sub> <span class="heat-arrow">→<sup>Δ</sup></span>
+            2PbO<sub>(s)</sub> + 4NO<sub>2(g)</sub> + O<sub>2(g)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim3" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn3" onclick="toggleSim(3)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(3)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Brown fumes of NO₂ gas evolve</li>
+              <li>White powder turns yellow (PbO)</li>
+              <li>Crackling sound heard</li>
+              <li>O₂ gas also released</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 4: Electrolysis of Water -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-decomp">Decomposition</span>
+            <span class="badge badge-elec">Electrolytic</span>
+          </div>
+          <h3>Electrolysis of Water</h3>
+          <div class="equation">2H<sub>2</sub>O<sub>(l)</sub> <span class="elec-arrow">→<sup>electricity</sup></span>
+            2H<sub>2(g)</sub> + O<sub>2(g)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim4" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn4" onclick="toggleSim(4)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(4)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>H₂ gas at cathode (–): double volume</li>
+              <li>O₂ gas at anode (+): single volume</li>
+              <li>Volume ratio H₂:O₂ = 2:1</li>
+              <li>Water level gradually decreases</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 5: Fe + CuSO4 -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-displace">Displacement</span>
+          </div>
+          <h3>Iron Nail in Copper Sulphate</h3>
+          <div class="equation">Fe<sub>(s)</sub> + CuSO<sub>4(aq)</sub> <span class="arrow">→</span>
+            FeSO<sub>4(aq)</sub> + Cu<sub>(s)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim5" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn5" onclick="toggleSim(5)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(5)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Blue CuSO₄ solution turns pale green (FeSO₄)</li>
+              <li>Iron nail gets reddish-brown copper coating</li>
+              <li>Iron is more reactive than copper</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 6: BaCl2 + Na2SO4 -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-double">Double Displacement</span>
+            <span class="badge badge-precip">Precipitation</span>
+          </div>
+          <h3>BaCl₂ + Na₂SO₄ → White Precipitate</h3>
+          <div class="equation">BaCl<sub>2(aq)</sub> + Na<sub>2</sub>SO<sub>4(aq)</sub> <span class="arrow">→</span>
+            BaSO<sub>4(s)</sub>↓ + 2NaCl<sub>(aq)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim6" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn6" onclick="toggleSim(6)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(6)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>White precipitate of BaSO₄ forms immediately</li>
+              <li>Insoluble in dilute acids</li>
+              <li>Ions exchange between salts</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /cards-grid -->
+    </section>
+
+    <!-- ========== CHAPTER 2 ========== -->
+    <section class="chapter-section" id="chapter2">
+      <div class="chapter-header">
+        <span class="chapter-num">Chapter 2</span>
+        <h2>Acids, Bases &amp; Salts</h2>
+      </div>
+      <div class="cards-grid">
+
+        <!-- Sim 7: Zn + H2SO4 -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Acid + Metal</span>
+          </div>
+          <h3>Zinc + Dilute Sulphuric Acid</h3>
+          <div class="equation">Zn<sub>(s)</sub> + H<sub>2</sub>SO<sub>4(aq)</sub> <span class="arrow">→</span>
+            ZnSO<sub>4(aq)</sub> + H<sub>2(g)</sub>↑</div>
+          <div class="canvas-wrap">
+            <canvas id="sim7" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn7" onclick="toggleSim(7)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(7)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Hydrogen gas bubbles vigorously</li>
+              <li>Zinc granules gradually dissolve</li>
+              <li>Burns with a pop (H₂ is combustible)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 8: NaOH + HCl -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-neutral">Neutralization</span>
+            <span class="badge badge-exo">Exothermic</span>
+          </div>
+          <h3>NaOH + HCl Neutralization</h3>
+          <div class="equation">NaOH<sub>(aq)</sub> + HCl<sub>(aq)</sub> <span class="arrow">→</span>
+            NaCl<sub>(aq)</sub> + H<sub>2</sub>O<sub>(l)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim8" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn8" onclick="toggleSim(8)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(8)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Pink (phenolphthalein) turns colourless at neutral</li>
+              <li>pH changes from acidic → neutral (7)</li>
+              <li>Temperature of solution rises (exothermic)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 9: Na2CO3 + HCl -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Acid + Carbonate</span>
+          </div>
+          <h3>Na₂CO₃ + HCl → CO₂</h3>
+          <div class="equation">Na<sub>2</sub>CO<sub>3(s)</sub> + 2HCl<sub>(aq)</sub> <span class="arrow">→</span>
+            2NaCl<sub>(aq)</sub> + H<sub>2</sub>O<sub>(l)</sub> + CO<sub>2(g)</sub>↑</div>
+          <div class="canvas-wrap">
+            <canvas id="sim9" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn9" onclick="toggleSim(9)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(9)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Vigorous effervescence of CO₂ gas</li>
+              <li>CO₂ turns limewater milky</li>
+              <li>Salt and water also formed</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 10: pH Scale -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-elec">Interactive</span>
+          </div>
+          <h3>pH Scale — Universal Indicator</h3>
+          <div class="equation">pH = −log[H<sup>+</sup>] &nbsp;&nbsp; Acidic &lt; 7 &lt; Basic</div>
+          <div class="canvas-wrap">
+            <canvas id="sim10" width="380" height="240"></canvas>
+          </div>
+          <div class="ph-slider-wrap">
+            <label>pH: <strong id="ph-value">7</strong></label>
+            <input type="range" id="ph-slider" min="0" max="14" step="0.1" value="7" oninput="updatePH(this.value)" />
+          </div>
+          <div class="observations">
+            <h4>🔬 pH Examples</h4>
+            <ul>
+              <li>HCl: pH ≈ 1 (strong acid)</li>
+              <li>Pure Water: pH = 7 (neutral)</li>
+              <li>NaOH: pH ≈ 14 (strong base)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 11: CaO + H2O -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Combination</span>
+            <span class="badge badge-exo">Exothermic</span>
+          </div>
+          <h3>Quicklime + Water (Slaking)</h3>
+          <div class="equation">CaO<sub>(s)</sub> + H<sub>2</sub>O<sub>(l)</sub> <span class="arrow">→</span>
+            Ca(OH)<sub>2(aq)</sub> + Heat</div>
+          <div class="canvas-wrap">
+            <canvas id="sim11" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn11" onclick="toggleSim(11)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(11)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Hissing sound when water is added</li>
+              <li>Vigorous steam/vapour rises</li>
+              <li>Temperature rises sharply</li>
+              <li>Slaked lime Ca(OH)₂ is formed</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== CHAPTER 3 ========== -->
+    <section class="chapter-section" id="chapter3">
+      <div class="chapter-header">
+        <span class="chapter-num">Chapter 3</span>
+        <h2>Metals &amp; Non-Metals</h2>
+      </div>
+      <div class="cards-grid">
+
+        <!-- Sim 12: Na + H2O -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Metal + Water</span>
+            <span class="badge badge-exo">Vigorous</span>
+          </div>
+          <h3>Sodium + Water</h3>
+          <div class="equation">2Na<sub>(s)</sub> + 2H<sub>2</sub>O<sub>(l)</sub> <span class="arrow">→</span>
+            2NaOH<sub>(aq)</sub> + H<sub>2(g)</sub> + Heat</div>
+          <div class="canvas-wrap">
+            <canvas id="sim12" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn12" onclick="toggleSim(12)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(12)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Sodium skates/slides on water surface</li>
+              <li>H₂ gas catches fire — lilac/yellow flame</li>
+              <li>Very vigorous, exothermic reaction</li>
+              <li>NaOH solution formed (turns phenolphthalein pink)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 13: Fe + Steam -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Metal + Steam</span>
+          </div>
+          <h3>Iron + Steam</h3>
+          <div class="equation">3Fe<sub>(s)</sub> + 4H<sub>2</sub>O<sub>(g)</sub> <span
+              class="heat-arrow">→<sup>Δ</sup></span> Fe<sub>3</sub>O<sub>4(s)</sub> + 4H<sub>2(g)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim13" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn13" onclick="toggleSim(13)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(13)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Iron wool/strip turns black (Fe₃O₄)</li>
+              <li>H₂ gas collected at outlet</li>
+              <li>Reaction needs high temperature (steam)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 14: Thermite -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-displace">Displacement</span>
+            <span class="badge badge-exo">Highly Exothermic</span>
+          </div>
+          <h3>Thermite Reaction</h3>
+          <div class="equation">Fe<sub>2</sub>O<sub>3(s)</sub> + 2Al<sub>(s)</sub> <span
+              class="heat-arrow">→<sup>Δ</sup></span> Al<sub>2</sub>O<sub>3(s)</sub> + 2Fe<sub>(l)</sub> + Heat</div>
+          <div class="canvas-wrap">
+            <canvas id="sim14" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn14" onclick="toggleSim(14)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(14)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Intense dazzling light and heat</li>
+              <li>Molten iron (Fe) flows out</li>
+              <li>Aluminium displaces iron from its oxide</li>
+              <li>Used in welding railway tracks</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 15: Corrosion/Rusting -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-redox">Oxidation</span>
+            <span class="badge badge-slow">Slow Reaction</span>
+          </div>
+          <h3>Corrosion of Iron (Rusting)</h3>
+          <div class="equation">4Fe<sub>(s)</sub> + 3O<sub>2(g)</sub> + xH<sub>2</sub>O <span class="arrow">→</span>
+            2Fe<sub>2</sub>O<sub>3</sub>·xH<sub>2</sub>O<sub>(rust)</sub></div>
+          <div class="canvas-wrap">
+            <canvas id="sim15" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn15" onclick="toggleSim(15)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(15)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Iron surface gradually turns reddish-brown</li>
+              <li>Rust = hydrated iron oxide (Fe₂O₃·xH₂O)</li>
+              <li>Requires O₂ and moisture</li>
+              <li>Prevented by painting, galvanizing, alloying</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========== CHAPTER 4 ========== -->
+    <section class="chapter-section" id="chapter4">
+      <div class="chapter-header">
+        <span class="chapter-num">Chapter 4</span>
+        <h2>Carbon and its Compounds</h2>
+      </div>
+      <div class="cards-grid">
+
+        <!-- Sim 16: Combustion of Methane -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-exo">Combustion</span>
+            <span class="badge badge-exo">Highly Exothermic</span>
+          </div>
+          <h3>Combustion of Methane</h3>
+          <div class="equation">CH<sub>4(g)</sub> + 2O<sub>2(g)</sub> <span class="arrow">→</span> CO<sub>2(g)</sub> +
+            2H<sub>2</sub>O<sub>(g)</sub> + Heat + Light</div>
+          <div class="canvas-wrap">
+            <canvas id="sim16" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn16" onclick="toggleSim(16)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(16)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Burns with a clean blue flame</li>
+              <li>Releases large amount of heat and light</li>
+              <li>Produces carbon dioxide and water vapour</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 17: Oxidation of Ethanol -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-redox">Oxidation</span>
+          </div>
+          <h3>Oxidation of Ethanol</h3>
+          <div class="equation">CH<sub>3</sub>CH<sub>2</sub>OH <span class="heat-arrow">→<sup>Alk. KMnO₄ +
+                Δ</sup></span> CH<sub>3</sub>COOH</div>
+          <div class="canvas-wrap">
+            <canvas id="sim17" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn17" onclick="toggleSim(17)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(17)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Purple colour of KMnO₄ disappears initially</li>
+              <li>Ethanol is oxidised to Ethanoic acid</li>
+              <li>Requires heat for the reaction to proceed</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 18: Addition Reaction -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Addition</span>
+            <span class="badge badge-slow">Catalytic</span>
+          </div>
+          <h3>Addition Reaction (Hydrogenation)</h3>
+          <div class="equation">Vegetable Oil (Unsaturated) + H<sub>2</sub> <span class="heat-arrow">→<sup>Ni
+                catalyst</sup></span> Animal Fat (Saturated)</div>
+          <div class="canvas-wrap">
+            <canvas id="sim18" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn18" onclick="toggleSim(18)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(18)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Liquid vegetable oil solidifies into fat (ghee)</li>
+              <li>Hydrogen is added across the double bond</li>
+              <li>Nickel or Palladium acts as a catalyst</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 19: Substitution Reaction -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-displace">Substitution</span>
+          </div>
+          <h3>Substitution in Sunlight</h3>
+          <div class="equation">CH<sub>4</sub> + Cl<sub>2</sub> <span class="heat-arrow">→<sup>Sunlight</sup></span>
+            CH<sub>3</sub>Cl + HCl</div>
+          <div class="canvas-wrap">
+            <canvas id="sim19" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn19" onclick="toggleSim(19)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(19)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Yellow-green chlorine gas reacts with methane</li>
+              <li>Colour of chlorine fades in sunlight</li>
+              <li>Hydrogen is substituted by chlorine atom</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 20: Ethanol + Sodium -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-displace">Displacement</span>
+          </div>
+          <h3>Ethanol + Sodium</h3>
+          <div class="equation">2Na + 2CH<sub>3</sub>CH<sub>2</sub>OH <span class="arrow">→</span>
+            2CH<sub>3</sub>CH<sub>2</sub>ONa + H<sub>2</sub>↑</div>
+          <div class="canvas-wrap">
+            <canvas id="sim20" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn20" onclick="toggleSim(20)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(20)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Sodium metal reacts steadily with ethanol</li>
+              <li>Bubbles of hydrogen gas are evolved</li>
+              <li>Sodium ethoxide solution is formed</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 21: Esterification -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-double">Esterification</span>
+          </div>
+          <h3>Reaction to form Ester</h3>
+          <div class="equation">CH<sub>3</sub>COOH + C<sub>2</sub>H<sub>5</sub>OH <span
+              class="heat-arrow">→<sup>Acid</sup></span> CH<sub>3</sub>COOC<sub>2</sub>H<sub>5</sub> + H<sub>2</sub>O
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="sim21" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn21" onclick="toggleSim(21)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(21)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Ethanoic acid and ethanol react upon heating</li>
+              <li>A sweet-smelling substance (ester) is formed</li>
+              <li>Requires an acid catalyst (conc. H₂SO₄)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 22: Saponification -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-neutral">Saponification</span>
+          </div>
+          <h3>Saponification (Soap formation)</h3>
+          <div class="equation">CH<sub>3</sub>COOC<sub>2</sub>H<sub>5</sub> + NaOH <span class="arrow">→</span>
+            CH<sub>3</sub>COONa + C<sub>2</sub>H<sub>5</sub>OH</div>
+          <div class="canvas-wrap">
+            <canvas id="sim22" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn22" onclick="toggleSim(22)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(22)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Ester reacts with a base (NaOH)</li>
+              <li>Sodium salt of carboxylic acid (soap) is formed</li>
+              <li>Ethanol is generated as a byproduct</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sim 23: Ethanoic acid + Na2CO3 -->
+        <div class="reaction-card">
+          <div class="card-badges">
+            <span class="badge badge-combo">Acid + Carbonate</span>
+          </div>
+          <h3>Ethanoic Acid + Sodium Carbonate</h3>
+          <div class="equation">2CH<sub>3</sub>COOH + Na<sub>2</sub>CO<sub>3</sub> <span class="arrow">→</span>
+            2CH<sub>3</sub>COONa + H<sub>2</sub>O + CO<sub>2</sub>↑</div>
+          <div class="canvas-wrap">
+            <canvas id="sim23" width="380" height="240"></canvas>
+          </div>
+          <div class="controls">
+            <button class="btn-play" id="btn23" onclick="toggleSim(23)">▶ Play</button>
+            <button class="btn-reset" onclick="resetSim(23)">↺ Reset</button>
+          </div>
+          <div class="observations">
+            <h4>🔬 Observations</h4>
+            <ul>
+              <li>Brisk effervescence occurs immediately</li>
+              <li>Carbon dioxide gas is rapidly released</li>
+              <li>Sodium ethanoate salt is formed</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>⚗️ <strong>Chemical Magics</strong> — Based on NCERT Class 10 Science Chapters 1, 2, 3 &amp; 4</p>
+    <p class="footer-sub">For educational purposes · All simulations are visual representations</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

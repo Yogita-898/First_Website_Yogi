@@ -71,7 +71,63 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// ---- 3. SIMULATION ENGINE ----
+// ---- 3. SOUND ENGINE (HTML5 Audio) ----
+const sounds = {
+  fizz: new Audio('sounds/fizz.mp3'),
+  hiss: new Audio('sounds/hiss.mp3'),
+  rumble: new Audio('sounds/rumble.mp3'),
+  crack: new Audio('sounds/crack.mp3'),
+  chime: new Audio('sounds/chime.mp3'),
+  pop: new Audio('sounds/pop.mp3'),
+  
+  init() {
+    this.fizz.volume = 0.5;
+    this.hiss.volume = 0.5;
+    this.rumble.volume = 0.5;
+    this.crack.volume = 0.5;
+    this.chime.volume = 0.5;
+    this.pop.volume = 0.8;
+  },
+  
+  playAudio(audioObj) {
+    // Only try to play if file is loaded/found
+    if (audioObj.readyState >= 2 || audioObj.src.includes('sounds')) {
+      audioObj.currentTime = 0;
+      let playPromise = audioObj.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          // File might be missing or play prevented
+        });
+      }
+    }
+  },
+  
+  resume() { }, // No-op for HTML5 audio
+  playFizz() { this.playAudio(this.fizz); },
+  playHiss() { this.playAudio(this.hiss); },
+  playRumble() { this.playAudio(this.rumble); },
+  playCrack() { this.playAudio(this.crack); },
+  playChime() { this.playAudio(this.chime); },
+  playPop() { this.playAudio(this.pop); }
+};
+sounds.init();
+
+function getSoundType(id) {
+  const fizzes = [4, 7, 9, 19, 24];
+  const hisses = [1, 11, 12, 13, 25];
+  const rumbles = [14, 16];
+  const chimes = [6, 8, 31];
+  const cracks = [2, 3, 27, 28];
+  
+  if (fizzes.includes(id)) return 'fizz';
+  if (hisses.includes(id)) return 'hiss';
+  if (rumbles.includes(id)) return 'rumble';
+  if (chimes.includes(id)) return 'chime';
+  if (cracks.includes(id)) return 'crack';
+  return null;
+}
+
+// ---- 4. SIMULATION ENGINE ----
 const sims = {}; // Store simulation states
 
 // Utility: Draw Beaker
@@ -126,8 +182,8 @@ function drawLabel(ctx, text, x, y, color='#fff', align='center') {
   ctx.restore();
 }
 
-// Setup all 23 canvases
-for (let i = 1; i <= 23; i++) {
+// Setup all canvases
+for (let i = 1; i <= 33; i++) {
   const canvas = document.getElementById('sim' + i);
   if (!canvas) continue;
   sims[i] = {
@@ -136,17 +192,37 @@ for (let i = 1; i <= 23; i++) {
     playing: false,
     progress: 0,
     particles: [],
-    customState: {}
+    customState: {},
+    soundType: getSoundType(i),
+    lastSound: 0
   };
 }
 
 // Global Animation Loop for Sims
 function loopSims() {
-  for (let i = 1; i <= 23; i++) {
+  for (let i = 1; i <= 33; i++) {
     if (!sims[i]) continue;
     const s = sims[i];
     if (s.playing || s.progress > 0 || i === 10) { // Sim 10 (pH) always draws
-      if (s.playing) s.progress += 0.002;
+      if (s.playing) {
+          s.progress += 0.002;
+          
+          // Audio playback logic
+          const now = Date.now();
+          if (s.soundType && now - s.lastSound > 400) {
+              if (Math.random() > 0.4) {
+                  if (s.soundType === 'fizz') sounds.playFizz();
+                  else if (s.soundType === 'hiss') sounds.playHiss();
+                  else if (s.soundType === 'rumble') sounds.playRumble();
+                  else if (s.soundType === 'crack') sounds.playCrack();
+                  else if (s.soundType === 'chime' && s.progress < 0.05) sounds.playChime();
+                  
+                  // Add pops to H2 related simulations
+                  if ([7, 12, 24].includes(i) && Math.random() > 0.8) sounds.playPop();
+              }
+              s.lastSound = now;
+          }
+      }
       if (s.progress > 1) s.progress = 1;
       
       const ctx = s.ctx;
@@ -179,6 +255,7 @@ window.toggleSim = function(id) {
   sims[id].playing = !sims[id].playing;
   
   if (sims[id].playing) {
+    sounds.resume(); // Ensure audio context is resumed on user interaction
     btn.innerHTML = '⏸ Pause';
     btn.classList.add('paused');
   } else {
@@ -798,6 +875,12 @@ const drawFunctions = {
     if (s.playing && s.progress < 1) drawLabel(ctx, 'Moisture / O₂', w/2, h/2 - 60, '#00d4ff');
   },
 
+  // 33. Corrosion of Iron (Rusting) in Chapter 1
+  33: (s, ctx, w, h) => {
+      // Reuse Sim 15 logic
+      drawFunctions[15](s, ctx, w, h);
+  },
+
   // 16. Combustion of Methane
   16: (s, ctx, w, h) => {
       // Bunsen burner
@@ -1097,6 +1180,333 @@ const drawFunctions = {
     drawLabel(ctx, 'Ethanoic Acid', w/2 + 50, h/2 + 30, '#fff', 'left');
     drawLabel(ctx, 'Na₂CO₃', w/2, h/2 + 90);
     if (s.playing && s.progress < 1) drawLabel(ctx, 'CO₂ Effervescence', w/2, h/2 - 30);
+  },
+
+  // 24. Zn + H2SO4 (Same as 7)
+  24: (s, ctx, w, h) => {
+    drawBeaker(ctx, w/2 - 40, h/2 - 20, 80, 100, 'rgba(200, 200, 200, 0.2)', 0.7);
+
+    // Zinc pieces (shrink over time)
+    const znSize = 10 * (1 - s.progress*0.8);
+    ctx.fillStyle = '#888';
+    ctx.beginPath(); ctx.arc(w/2 - 15, h/2 + 70, znSize, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(w/2 + 10, h/2 + 65, znSize*1.2, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(w/2, h/2 + 75, znSize*0.8, 0, Math.PI*2); ctx.fill();
+
+    if (s.playing && s.progress < 1) {
+        // Bubbles
+        if(Math.random() > 0.1) s.particles.push({x: w/2 + (Math.random()-0.5)*30, y: h/2 + 60, vy: -2 - Math.random()});
+    }
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+    ctx.lineWidth = 1;
+    for (let i = s.particles.length - 1; i >= 0; i--) {
+        let p = s.particles[i];
+        p.y += p.vy; p.x += Math.sin(p.y*0.1);
+        ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.stroke();
+        if (p.y < h/2 - 10) {
+            // "Pop" spark
+            ctx.fillStyle = 'rgba(255, 200, 0, 0.8)';
+            ctx.fillRect(p.x, p.y-5, 2, 2);
+            s.particles.splice(i, 1);
+        }
+    }
+    // Labels
+    drawLabel(ctx, 'Dil. H₂SO₄', w/2 + 50, h/2 + 30, '#fff', 'left');
+    drawLabel(ctx, 'Zinc Granules', w/2, h/2 + 90);
+    if (s.progress > 0) drawLabel(ctx, 'H₂ Bubbles', w/2, h/2 - 20);
+  },
+
+  // 25. Quicklime + Water (Same as 11)
+  25: (s, ctx, w, h) => {
+      drawBeaker(ctx, w/2 - 50, h/2 - 20, 100, 100, 'rgba(255,255,255,0.1)', 0.5);
+
+      // Chunks
+      ctx.fillStyle = '#ddd';
+      const shake = s.playing && s.progress < 0.8 ? (Math.random()-0.5)*4 : 0;
+      ctx.beginPath(); ctx.arc(w/2 - 20 + shake, h/2 + 60, 15, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w/2 + 10 + shake, h/2 + 65, 18, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(w/2 + shake, h/2 + 45, 12, 0, Math.PI*2); ctx.fill();
+
+      if (s.playing) {
+          // Heat glow
+          let heat = Math.sin(s.progress * Math.PI);
+          const grad = ctx.createRadialGradient(w/2, h/2 + 50, 0, w/2, h/2 + 50, 80);
+          grad.addColorStop(0, `rgba(255, 100, 0, ${heat*0.6})`);
+          grad.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(w/2 - 100, h/2 - 50, 200, 200);
+
+          // Steam
+          if (s.progress < 0.9) {
+              s.particles.push({x: w/2 + (Math.random()-0.5)*40, y: h/2 + 20, vy: -2 - Math.random(), life: 1});
+          }
+      }
+
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+          let p = s.particles[i];
+          p.y += p.vy; p.x += (Math.random()-0.5)*2; p.life -= 0.02;
+          ctx.fillStyle = `rgba(255,255,255,${p.life * 0.5})`;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 8, 0, Math.PI*2); ctx.fill();
+          if (p.life <= 0) s.particles.splice(i, 1);
+      }
+    // Labels
+    drawLabel(ctx, 'Water', w/2 + 60, h/2 + 20, '#fff', 'left');
+    drawLabel(ctx, s.progress < 0.8 ? 'Quicklime (CaO)' : 'Slaked Lime', w/2, h/2 + 95);
+    if (s.playing && s.progress < 0.9) drawLabel(ctx, 'Heat & Steam', w/2, h/2 - 20, '#ffaa00');
+  },
+
+  // 26. Whitewashing
+  26: (s, ctx, w, h) => {
+      // Wall background
+      ctx.fillStyle = '#a08575'; // brick color
+      ctx.fillRect(w/2 - 80, h/2 - 60, 160, 120);
+      
+      // Whitewash layer
+      // Gradually turns from wet translucent to bright opaque white
+      let alpha = 0.5 + s.progress * 0.5;
+      let r = Math.floor(200 + s.progress * 55);
+      let gb = Math.floor(220 + s.progress * 35);
+      ctx.fillStyle = `rgba(${r}, ${gb}, ${gb}, ${alpha})`;
+      ctx.fillRect(w/2 - 80, h/2 - 60, 160, 120);
+
+      if (s.playing && s.progress < 1) {
+          // CO2 molecules from air reacting
+          if (Math.random() > 0.5) s.particles.push({x: w/2 - 100 + Math.random()*200, y: h/2 - 80, vy: 1 + Math.random()});
+      }
+
+      ctx.fillStyle = 'rgba(200, 255, 255, 0.4)'; // CO2
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+          let p = s.particles[i];
+          p.y += p.vy;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
+          if (p.y > h/2 + 60) s.particles.splice(i, 1);
+      }
+
+      drawLabel(ctx, 'Brick Wall', w/2 - 100, h/2, '#fff', 'right');
+      drawLabel(ctx, s.progress < 0.5 ? 'Ca(OH)₂ (Wet)' : 'CaCO₃ (Shiny White)', w/2, h/2 + 80);
+      if (s.playing && s.progress < 1) drawLabel(ctx, 'CO₂ from Air', w/2, h/2 - 90);
+  },
+
+  // 27. AgCl Decomposition
+  27: (s, ctx, w, h) => {
+      // China dish
+      ctx.fillStyle = '#eee';
+      ctx.beginPath(); ctx.arc(w/2, h/2 + 40, 40, 0, Math.PI, false); ctx.fill();
+
+      // Powder (White -> Grey)
+      const c = Math.floor(255 - s.progress * 155); // 255 to 100
+      ctx.fillStyle = `rgb(${c}, ${c}, ${c})`;
+      ctx.beginPath();
+      ctx.moveTo(w/2 - 35, h/2 + 40);
+      ctx.lineTo(w/2 + 35, h/2 + 40);
+      ctx.arc(w/2, h/2 + 40, 35, 0, Math.PI, false);
+      ctx.fill();
+
+      if (s.playing) {
+          // Sunlight
+          ctx.fillStyle = 'rgba(255, 200, 0, 0.8)';
+          ctx.beginPath(); ctx.arc(w/2 - 80, h/2 - 50, 15, 0, Math.PI*2); ctx.fill();
+          for(let a=0; a<Math.PI*2; a+=Math.PI/4) {
+              ctx.beginPath(); 
+              ctx.moveTo(w/2 - 80 + Math.cos(a)*18, h/2 - 50 + Math.sin(a)*18);
+              ctx.lineTo(w/2 - 80 + Math.cos(a)*25, h/2 - 50 + Math.sin(a)*25);
+              ctx.strokeStyle = 'rgba(255, 200, 0, 0.8)';
+              ctx.lineWidth = 2;
+              ctx.stroke();
+          }
+
+          // Cl2 gas escaping
+          if (s.progress > 0.1 && Math.random() > 0.5) {
+              s.particles.push({x: w/2 + (Math.random()-0.5)*30, y: h/2 + 30, vy: -1 - Math.random()});
+          }
+      }
+
+      ctx.fillStyle = 'rgba(150, 255, 100, 0.5)'; // yellowish-green Cl2
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+          let p = s.particles[i];
+          p.x += (Math.random()-0.5); p.y += p.vy;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+          if (p.y < h/2 - 50) s.particles.splice(i, 1);
+      }
+
+      drawLabel(ctx, 'China Dish', w/2 + 60, h/2 + 50, '#fff', 'left');
+      drawLabel(ctx, s.progress < 0.5 ? 'AgCl (White)' : 'Ag (Grey)', w/2, h/2 + 90);
+      if (s.playing) {
+          drawLabel(ctx, 'Sunlight', w/2 - 80, h/2 - 70, '#ffaa00');
+          if (s.progress > 0.1) drawLabel(ctx, 'Cl₂ Gas', w/2 + 50, h/2 - 20, '#fff', 'left');
+      }
+  },
+
+  // 28. AgBr Decomposition
+  28: (s, ctx, w, h) => {
+      // China dish
+      ctx.fillStyle = '#eee';
+      ctx.beginPath(); ctx.arc(w/2, h/2 + 40, 40, 0, Math.PI, false); ctx.fill();
+
+      // Powder (Pale Yellow -> Grey)
+      const r = Math.floor(255 - s.progress * 155); 
+      const g = Math.floor(255 - s.progress * 155); 
+      const b = Math.floor(180 - s.progress * 80); 
+      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      ctx.beginPath();
+      ctx.moveTo(w/2 - 35, h/2 + 40);
+      ctx.lineTo(w/2 + 35, h/2 + 40);
+      ctx.arc(w/2, h/2 + 40, 35, 0, Math.PI, false);
+      ctx.fill();
+
+      if (s.playing) {
+          // Sunlight
+          ctx.fillStyle = 'rgba(255, 200, 0, 0.8)';
+          ctx.beginPath(); ctx.arc(w/2 - 80, h/2 - 50, 15, 0, Math.PI*2); ctx.fill();
+          for(let a=0; a<Math.PI*2; a+=Math.PI/4) {
+              ctx.beginPath(); 
+              ctx.moveTo(w/2 - 80 + Math.cos(a)*18, h/2 - 50 + Math.sin(a)*18);
+              ctx.lineTo(w/2 - 80 + Math.cos(a)*25, h/2 - 50 + Math.sin(a)*25);
+              ctx.strokeStyle = 'rgba(255, 200, 0, 0.8)';
+              ctx.lineWidth = 2;
+              ctx.stroke();
+          }
+
+          // Br2 gas escaping
+          if (s.progress > 0.1 && Math.random() > 0.5) {
+              s.particles.push({x: w/2 + (Math.random()-0.5)*30, y: h/2 + 30, vy: -1 - Math.random()});
+          }
+      }
+
+      ctx.fillStyle = 'rgba(200, 100, 50, 0.5)'; // reddish-brown Br2
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+          let p = s.particles[i];
+          p.x += (Math.random()-0.5); p.y += p.vy;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+          if (p.y < h/2 - 50) s.particles.splice(i, 1);
+      }
+
+      drawLabel(ctx, 'China Dish', w/2 + 60, h/2 + 50, '#fff', 'left');
+      drawLabel(ctx, s.progress < 0.5 ? 'AgBr (Pale Yellow)' : 'Ag (Grey)', w/2, h/2 + 90);
+      if (s.playing) {
+          drawLabel(ctx, 'Sunlight', w/2 - 80, h/2 - 70, '#ffaa00');
+          if (s.progress > 0.1) drawLabel(ctx, 'Br₂ Gas', w/2 + 50, h/2 - 20, '#fff', 'left');
+      }
+  },
+
+  // 29. Zn + CuSO4
+  29: (s, ctx, w, h) => {
+      // Solution Blue -> Colourless (ZnSO4)
+      const r = Math.floor(0 + s.progress * 200);
+      const g = Math.floor(150 + s.progress * 50);
+      const b = Math.floor(255 - s.progress * 55);
+      
+      drawBeaker(ctx, w/2 - 40, h/2 - 20, 80, 100, `rgba(${r}, ${g}, ${b}, 0.8)`, 0.8);
+
+      // Zn Strip: Grey -> Reddish Brown
+      ctx.save();
+      ctx.translate(w/2, h/2 + 20);
+      ctx.rotate(Math.PI / 8);
+      
+      const nr = Math.floor(150 + s.progress * 50);
+      const ng = Math.floor(150 - s.progress * 100);
+      const nb = Math.floor(150 - s.progress * 120);
+      ctx.fillStyle = `rgb(${nr}, ${ng}, ${nb})`;
+      
+      ctx.fillRect(-10, -40, 20, 80);
+      ctx.restore();
+
+      drawLabel(ctx, s.progress < 0.5 ? 'CuSO₄ (Blue)' : 'ZnSO₄ (Colourless)', w/2 + 50, h/2 + 50, '#fff', 'left');
+      drawLabel(ctx, s.progress < 0.5 ? 'Zinc Strip' : 'Cu Coated Strip', w/2 - 20, h/2 - 30);
+  },
+
+  // 30. Pb + CuCl2
+  30: (s, ctx, w, h) => {
+      // Solution Green/Blue -> Colourless (PbCl2)
+      const r = Math.floor(0 + s.progress * 200);
+      const g = Math.floor(200 + s.progress * 0);
+      const b = Math.floor(150 + s.progress * 50);
+      
+      drawBeaker(ctx, w/2 - 40, h/2 - 20, 80, 100, `rgba(${r}, ${g}, ${b}, 0.8)`, 0.8);
+
+      // Pb piece: Grey -> Reddish Brown
+      ctx.save();
+      ctx.translate(w/2, h/2 + 40);
+      
+      const nr = Math.floor(120 + s.progress * 80);
+      const ng = Math.floor(120 - s.progress * 70);
+      const nb = Math.floor(120 - s.progress * 90);
+      ctx.fillStyle = `rgb(${nr}, ${ng}, ${nb})`;
+      
+      ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+
+      drawLabel(ctx, s.progress < 0.5 ? 'CuCl₂ (Green/Blue)' : 'PbCl₂ (Colourless)', w/2 + 50, h/2 + 50, '#fff', 'left');
+      drawLabel(ctx, s.progress < 0.5 ? 'Lead Piece' : 'Cu Coated Lead', w/2, h/2 + 90);
+  },
+
+  // 31. Pb(NO3)2 + KI
+  31: (s, ctx, w, h) => {
+      drawBeaker(ctx, w/2 - 40, h/2, 80, 80, 'rgba(200,200,200,0.1)', 0.6); // Main beaker
+
+      if (s.playing && s.progress < 0.2) {
+          // Pouring
+          ctx.fillStyle = 'rgba(200,200,200,0.3)';
+          ctx.fillRect(w/2 - 10, h/2 - 50, 20, 80); // stream
+      }
+
+      // Yellow Precipitate (PbI2)
+      if (s.progress > 0.1) {
+          let precipAmt = Math.min(1, (s.progress - 0.1) * 3);
+          ctx.fillStyle = `rgba(255, 230, 0, ${precipAmt * 0.9})`;
+          ctx.beginPath();
+          ctx.moveTo(w/2 - 38, h/2 + 80);
+          ctx.lineTo(w/2 - 38, h/2 + 80 - 40 * precipAmt);
+          for(let x = w/2 - 38; x <= w/2 + 38; x+=10) {
+              ctx.lineTo(x, h/2 + 80 - 40 * precipAmt + Math.sin(x*0.5 + s.progress*10)*5);
+          }
+          ctx.lineTo(w/2 + 38, h/2 + 80);
+          ctx.fill();
+      }
+
+      drawLabel(ctx, 'Mixing Solutions', w/2 + 50, h/2 + 20, '#fff', 'left');
+      if (s.progress > 0.1) drawLabel(ctx, 'PbI₂ (Yellow Ppt)', w/2, h/2 + 95);
+  },
+
+  // 32. Corrosion of Ag and Cu
+  32: (s, ctx, w, h) => {
+      // Silver Spoon (Left)
+      ctx.save();
+      ctx.translate(w/2 - 40, h/2 + 10);
+      const sr = Math.floor(220 - s.progress * 200);
+      ctx.fillStyle = `rgb(${sr}, ${sr}, ${sr})`;
+      ctx.beginPath(); ctx.ellipse(0, -30, 15, 20, 0, 0, Math.PI*2); ctx.fill();
+      ctx.fillRect(-5, -15, 10, 50);
+      ctx.restore();
+
+      // Copper Coin (Right)
+      ctx.save();
+      ctx.translate(w/2 + 40, h/2 + 10);
+      const cr = Math.floor(184 - s.progress * 130);
+      const cg = Math.floor(115 + s.progress * 80);
+      const cb = Math.floor(51 + s.progress * 100);
+      ctx.fillStyle = `rgb(${cr}, ${cg}, ${cb})`;
+      ctx.beginPath(); ctx.arc(0, 0, 25, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+
+      if (s.playing && s.progress < 1) {
+          // H2S and Moisture hitting them
+          if(Math.random() > 0.5) s.particles.push({x: w/2 - 60 + Math.random()*40, y: h/2 - 60, vy: 1}); // to spoon
+          if(Math.random() > 0.5) s.particles.push({x: w/2 + 20 + Math.random()*40, y: h/2 - 60, vy: 1}); // to coin
+      }
+
+      ctx.fillStyle = 'rgba(200, 255, 255, 0.4)';
+      for (let i = s.particles.length - 1; i >= 0; i--) {
+          let p = s.particles[i];
+          p.y += p.vy;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI*2); ctx.fill();
+          if (p.y > h/2 + 20) s.particles.splice(i, 1);
+      }
+
+      drawLabel(ctx, s.progress < 0.5 ? 'Silver Spoon' : 'Ag₂S (Black)', w/2 - 40, h/2 + 65);
+      drawLabel(ctx, s.progress < 0.5 ? 'Copper Coin' : 'Basic CuCO₃ (Green)', w/2 + 40, h/2 + 65);
+      if (s.playing && s.progress < 1) drawLabel(ctx, 'Air / Moisture / H₂S', w/2, h/2 - 80, '#00d4ff');
   }
 };
 
